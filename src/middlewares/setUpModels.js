@@ -8,22 +8,27 @@ export async function setUpModels() {
     try {
         Members.hasMany(Competitions)
         Competitions.belongsTo(Members)
+        
+
 
         Members.hasMany(ExamsAndGrades)
         ExamsAndGrades.belongsTo(Members)
 
-        const membersForce = true
-        const examsNGradesForce = true
-        const competitionsForce = true
-        const roleForce = true
+        Members.hasOne(Roles)
+        Roles.belongsTo(Members)
+
+        const membersForce = false
+        const examsNGradesForce = false
+        const competitionsForce = false
+        const roleForce = false
         const dniForce = true
 
-        await Roles.sync({ force: roleForce })
         await Members.sync({ force: membersForce })
         await ExamsAndGrades.sync({ force: examsNGradesForce })
         await Competitions.sync({ force: competitionsForce })
         await DniWhitelist.sync({ force: dniForce })
-        
+        await Roles.sync({ force: roleForce })
+
         console.log("Todas las tablas se sincronizaron correctamente")
 
     } catch (error) {

@@ -9,7 +9,7 @@ async function initServer() {
     try {
 
         await sequelize.authenticate()
-        await sequelize.sync({  })
+        await sequelize.sync()
         await setUpModels()
 
         app.listen(process.env.PORT || 3002, function () {

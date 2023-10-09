@@ -4,11 +4,6 @@ import sequelize from "../config/database.js";
 class Roles extends Model { }
 
 Roles.init({
-    userId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-
-    },
     role: {
         type: DataTypes.STRING,
         validate: {

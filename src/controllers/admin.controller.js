@@ -55,34 +55,18 @@ export async function viewAllMembers(req, res) {
                 "city",
                 "cel",
                 "countryCode"
-            ]
+            ],
+            include: {
+                model: Roles,
+                attributes: ["role"]
+            }
         })
-
-        const roles = await Roles.findAll({
-            attributes: ["userId", "role"]
-        })
-
-        const parsedData = []
-
-
-
 
         if (!members) {
             return res.status(500).json(response("Error al obtener la lista de miembros. Comunicate con soporte", false))
         }
 
-        if (!roles) {
-            return res.status(500).json(response("Error al obtener la lista de miembros. Comunicate con soporte", false))
-        }
-
-        members.forEach(member => {
-            const memberData = member?.dataValues
-            const role = roles?.find(r => r.id === memberData.userId)
-            parsedData.push({ ...memberData, role: role?.role })
-        })
-
-
-        return res.status(200).json(parsedData)
+        return res.json(members)
 
     } catch (error) {
         throw new Error(`Error en el controlador viewAllMembers (admin) ${error}`)
@@ -96,6 +80,59 @@ export async function viewDNIWhitelist(req, res) {
             return res.status(500).json(response("No se pudo obtener la lista de Dni, comunicate con soporte."))
         }
         return res.json(dnis)
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+export async function changeRole(req, res) {
+    try {
+
+        const { UserId, newRole } = req.body
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).json(errors.array()?.map(function (e) {
+                return {
+                    message: e.msg,
+                    path: e.path
+                }
+            }))
+        }
+
+        const currentAdmin = await Members.findOne({
+            where: {
+                id: req?.user?.id
+            },
+            attributes: [],
+            include: {
+                model: Roles,
+            }
+        })
+
+        if (newRole === "owner" && currentAdmin.Role?.role !== "owner") {
+            return res.status(401).json(response("No tenes permiso para hacer esto", false))
+        }
+
+        const user = await Members.findOne({
+            where: {
+                id: UserId
+            },
+            attributes: [],
+            include: {
+                model: Roles
+            }
+        })
+
+        if (!user) {
+            return res.status(404).json(response("No se encontro el usuario", false))
+        }
+
+        await user?.Role.update({
+            role: newRole
+        })
+
+
+        return res.json(user)
     } catch (error) {
         throw new Error(error)
     }
