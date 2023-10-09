@@ -64,7 +64,8 @@ Members.init({
         defaultValue: "+54"
     }
 }, {
-    sequelize: sequelize
+    sequelize: sequelize,
+  
 })
 
 

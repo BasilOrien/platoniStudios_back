@@ -38,3 +38,17 @@ export default function login(req, res, next) {
         throw new Error(error)
     }
 }
+
+export function logout(req, res) {
+    if (!req.isAuthenticated()) {
+        return res.json(response("Inicia sesión para continuar", false))
+    }
+    req.logout(function (error) {
+        if (error) {
+            console.error(error)
+            return res.status(500).json(response("Se produjo un error al cerrar sesión, comunicate con el administrador de la plataforma.", false))
+        }
+
+        return res.status(200).json(response("Cerraste sesión", true))
+    })
+}

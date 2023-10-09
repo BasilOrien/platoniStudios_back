@@ -16,7 +16,8 @@ export function configurePassport() {
                 user = await Members.findOne({
                     where: {
                         dni: username
-                    }
+                    },
+
                 })
             } else {
                 user = await Members.findOne({

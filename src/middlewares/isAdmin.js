@@ -9,8 +9,8 @@ export async function isAdmin(req, res, next) {
             }
         })
 
-        if (!user) {
-            req.logout(function (err) {
+        if (!req?.user?.id) {
+            return req.logout(function (err) {
                 if (err) {
                     return res.json(response("Se produjo un error mientras se obtenian las credenciales, comunicate con soporte", false))
                 }
@@ -20,13 +20,14 @@ export async function isAdmin(req, res, next) {
 
         const role = user?.role
 
-        console.log(role)
 
         if (role !== "owner" && role !== "admin") {
             return res.status(401).json(response("No tenes permiso para hacer esto.", false))
+        } else {
+
+            return next()
         }
 
-        return next()
 
     } catch (error) {
         throw new Error(`Error en isAdmin middleware: error`)

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { register } from "../controllers/register.controller.js";
 import { body } from "express-validator";
 import Roles from "../models/roles.model.js";
-import login from "../controllers/login.controller.js";
+import login, { logout } from "../controllers/login.controller.js";
 import response from "../middlewares/response.js";
 
 const authRoute = Router()
@@ -36,6 +36,7 @@ const loginRules = [
 
 authRoute.post("/register", registerRules, register)
 authRoute.post("/login", loginRules, login)
+authRoute.get("/logout", logout)
 authRoute.get("/is_auth", function (req, res) {
     return res.json(response(null, req.isAuthenticated()))
 })
@@ -45,5 +46,6 @@ authRoute.get("/view_roles", async function (_, res) {
     const roles = await Roles.findAll()
     return res.json(roles)
 })
+
 
 export default authRoute 

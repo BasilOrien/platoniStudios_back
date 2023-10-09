@@ -9,9 +9,9 @@ async function initServer() {
     try {
 
         await sequelize.authenticate()
-        await sequelize.sync({ force: true })
+        await sequelize.sync({  })
         await setUpModels()
-        
+
         app.listen(process.env.PORT || 3002, function () {
             console.log(`Server running on http://localhost${process.env.PORT || 3002}`)
         })

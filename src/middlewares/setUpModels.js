@@ -25,6 +25,7 @@ export async function setUpModels() {
         await DniWhitelist.sync({ force: dniForce })
         
         console.log("Todas las tablas se sincronizaron correctamente")
+
     } catch (error) {
         throw new Error(`Error al sincronizar las tablas :${error}`)
     }
